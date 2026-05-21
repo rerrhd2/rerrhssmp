@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rerrhd smp — Minecraft server</title>
+  <meta name="description" content="Превосходство. Скорость. Победа." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══ CANVAS PARTICLES ══ -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- ══ NOISE OVERLAY ══ -->
+<div class="noise"></div>
+
+<!-- ══ BG GLOWS ══ -->
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+
+<!-- ══ SCANLINES ══ -->
+<div class="scanlines"></div>
+
+<!-- ══ CURSOR ══ -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- ════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <a class="nav-logo" onclick="scrollTo({top:0,behavior:'smooth'})">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="8" height="8" fill="currentColor" opacity="0.9"/>
+        <rect x="13" y="3" width="8" height="8" fill="currentColor" opacity="0.6"/>
+        <rect x="3" y="13" width="8" height="8" fill="currentColor" opacity="0.6"/>
+        <rect x="13" y="13" width="8" height="8" fill="currentColor" opacity="0.3"/>
+      </svg>
+    </div>
+    <span>rerrhd<span class="logo-accent">.</span></span>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero"     data-i18n="nav0">Главная</a></li>
+    <li><a href="#features" data-i18n="nav1">Функции</a></li>
+    <li><a href="#pricing"  data-i18n="nav3">Скопировать</a></li>
+    <li><a href="#support"  data-i18n="nav4">Поддержка</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="lang-selector" id="langSelector">
+      <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">
+        <span id="langFlag">🇷🇺</span>
+        <span id="langLabel">RU</span>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="2,4 6,8 10,4"/>
+        </svg>
+      </button>
+      <div class="lang-dropdown" id="langDropdown"></div>
+    </div>
+
+    <a href="#pricing" class="btn-nav-buy" data-i18n="navBuy">Скопировать</a>
+
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ MOBILE MENU ══ -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#hero"     onclick="closeMobileMenu()" data-mob-i18n="nav0">Главная</a>
+  <a href="#features" onclick="closeMobileMenu()" data-mob-i18n="nav1">Функции</a>
+  <a href="#pricing"  onclick="closeMobileMenu()" data-mob-i18n="nav3">Скопировать</a>
+  <a href="#support"  onclick="closeMobileMenu()" data-mob-i18n="nav4">Поддержка</a>
+</div>
+
+<!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section id="hero" class="hero-section">
+
+  <!-- Minecraft block grid background -->
+  <div class="hero-blocks" id="heroBlocks"></div>
+
+  <div class="hero-inner">
+    <div class="hero-content">
+
+      <div class="hero-tag anim-up">
+        <span class="tag-dot"></span>
+        <span>Minecraft server >.<</span>
+      </div>
+
+      <h1 class="hero-title anim-up-2">
+        <span class="title-line-1">rerrhd</span>
+        <span class="title-line-2">SMP</span>
+        <div class="title-glitch" aria-hidden="true">rerrhd<br>SMP</div>
+      </h1>
+
+      <p class="hero-tagline anim-up-3" id="heroTagline">Превосходство. Скорость. Победа.</p>
+
+      <p class="hero-sub anim-up-3" id="heroQuote">Мы не просто сервер — мы стиль игры.</p>
+
+      <div class="hero-stats anim-up-4">
+        <div class="stat">
+          <span class="stat-num" data-count="99">0</span><span class="stat-sym">%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="stat-num" data-count="5">0</span><span class="stat-sym">+</span>
+          <span class="stat-label">Игроков</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="stat-num" data-count="24">0</span><span class="stat-sym"> / 7</span>
+          <span class="stat-label">Поддержка</span>
+        </div>
+      </div>
+
+      <div class="hero-actions anim-up-4">
+        <a href="#pricing" class="btn-primary" id="heroBtnBuy">
+          <span class="btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+          </span>
+          <span>Скопировать сейчас</span>
+          <span class="btn-shine"></span>
+        </a>
+        <a href="#features" class="btn-ghost" id="heroBtnLearn">
+          <span>Узнать больше</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
+
+  <div class="scroll-hint">
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+    <span data-i18n="scrollDown">Прокрутите вниз</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════ -->
+<section id="features" class="section">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <div class="section-eyebrow">
+        <span class="eyebrow-line"></span>
+        Преимущества
+        <span class="eyebrow-line"></span>
+      </div>
+      <h2 class="section-title" data-i18n="sectionFeatures">Наши преимущества</h2>
+      <p class="section-sub" data-i18n="featuresSubtitle">Всё, что вы гарантированно получите после покупки нашего клиента.</p>
+    </div>
+
+    <div class="features-grid" id="featuresGrid"></div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     VIDEO
+════════════════════════════════════════ -->
+
+
+
+<!-- ════════════════════════════════════════
+     SCREENSHOTS / MARQUEE
+════════════════════════════════════════ -->
+<section id="screenshots" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">
+        <span class="eyebrow-line"></span>
+        Скриншоты
+        <span class="eyebrow-line"></span>
+      </div>
+      <h2 class="section-title" data-i18n="sectionScreenshots">Скриншоты</h2>
+    </div>
+  </div>
+  <div class="screenshots-marquee reveal" id="screenshotsMarquee">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     PRICING
+════════════════════════════════════════ -->
+<section id="pricing" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">
+        <span class="eyebrow-line"></span>
+        Тарифы
+        <span class="eyebrow-line"></span>
+      </div>
+      <h2 class="section-title" data-i18n="sectionPricing">Тарифы</h2>
+      <p class="section-sub" data-i18n="pricingSubtitle">Выберите подходящий план. Все планы включают полный доступ.</p>
+    </div>
+
+    <div class="pricing-grid" id="pricingGrid"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SUPPORT
+════════════════════════════════════════ -->
+<section id="support" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">
+        <span class="eyebrow-line"></span>
+        Поддержка
+        <span class="eyebrow-line"></span>
+      </div>
+      <h2 class="section-title" data-i18n="sectionSupport">Поддержка</h2>
+      <p class="section-sub" data-i18n="supportSubtitle">Есть вопросы? Мы всегда рады помочь.</p>
+    </div>
+
+    <div class="support-cards">
+
+      <a class="support-card reveal" id="supportEmailCard" href="#">
+        <div class="support-card-glow"></div>
+        <div class="support-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="support-info">
+          <div class="support-label" data-i18n="supportEmail">Почта для связи</div>
+          <div class="support-value" id="supportEmailVal"></div>
+        </div>
+        <div class="support-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <a class="support-card reveal reveal-d2" id="supportDiscordCard" href="#" target="_blank" rel="noopener">
+        <div class="support-card-glow"></div>
+        <div class="support-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:22px;height:22px;">
+            <path d="M9 11.5a1 1 0 100 2 1 1 0 000-2zm6 0a1 1 0 100 2 1 1 0 000-2z"/>
+            <path d="M19.27 5.33A17.75 17.75 0 0014.94 4c-.18.33-.38.77-.52 1.12a16.36 16.36 0 00-4.84 0A11.2 11.2 0 009.06 4 17.8 17.8 0 004.73 5.33C2.02 9.46 1.27 13.48 1.65 17.45A17.87 17.87 0 007.1 20c.42-.57.79-1.17 1.11-1.81a11.6 11.6 0 01-1.74-.84l.42-.33a12.73 12.73 0 0010.22 0l.43.33c-.55.33-1.14.61-1.75.84.32.64.69 1.24 1.11 1.81a17.83 17.83 0 005.45-2.55c.44-4.53-.75-8.52-3.08-12.17z"/>
+          </svg>
+        </div>
+        <div class="support-info">
+          <div class="support-label" data-i18n="supportDiscord">Discord</div>
+          <div class="support-value">Discord Server</div>
+        </div>
+        <div class="support-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <a class="support-card reveal reveal-d3" id="supportTelegramCard" href="#" target="_blank" rel="noopener">
+        <div class="support-card-glow"></div>
+        <div class="support-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:22px;height:22px;">
+            <path d="M21.5 3.5L2.5 10.5l6.5 2 2 6.5 3-4 5.5 4z"/>
+            <path d="M9 12.5l9-9"/>
+          </svg>
+        </div>
+        <div class="support-info">
+          <div class="support-label" data-i18n="supportTelegram">Telegram</div>
+          <div class="support-value">Telegram Channel</div>
+        </div>
+        <div class="support-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="logo-icon sm">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="8" height="8" fill="currentColor" opacity="0.9"/>
+            <rect x="13" y="3" width="8" height="8" fill="currentColor" opacity="0.6"/>
+            <rect x="3" y="13" width="8" height="8" fill="currentColor" opacity="0.6"/>
+            <rect x="13" y="13" width="8" height="8" fill="currentColor" opacity="0.3"/>
+          </svg>
+        </div>
+        <span>rerrhd<span class="logo-accent">.</span></span>
+      </div>
+      <p class="footer-tagline" id="footerTagline">Превосходство. Скорость. Победа.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4 data-i18n="footerNav">Навигация</h4>
+      <ul>
+        <li><a href="#hero"     data-i18n="nav0">Главная</a></li>
+        <li><a href="#features" data-i18n="nav1">Функции</a></li>
+        <li><a href="#pricing"  data-i18n="nav3">Копировать</a></li>
+        <li><a href="#support"  data-i18n="nav4">Поддержка</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 data-i18n="footerLegal">Документы</h4>
+      <ul>
+        <li><a onclick="openModal('privacy')" data-i18n="footerPrivacy">Обработка персональных данных</a></li>
+        <li><a onclick="openModal('terms')"   data-i18n="footerTerms">Пользовательское соглашение</a></li>
+        <li><a onclick="openModal('rules')"   data-i18n="footerRules">Правила пользования</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p id="footerCopy"></p>
+    <div class="footer-soc">
+      <a href="#" id="footerDiscord">Discord</a>
+      <a href="#" id="footerTelegram">Telegram</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     MODALS
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalPrivacy" onclick="closeModalOutside(event,'modalPrivacy')">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 data-i18n="footerPrivacy">Обработка персональных данных</h3>
+      <button class="modal-close" onclick="closeModal('privacy')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body" id="privacyBody">
+      <div class="modal-placeholder">
+        <div class="modal-ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4 data-i18n="modalPlaceholderTitle">Документ в разработке</h4>
+        <p data-i18n="modalPrivacyDesc">Политика обработки персональных данных будет опубликована в ближайшее время.</p>
+        <code>config.js → legal.privacy</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalTerms" onclick="closeModalOutside(event,'modalTerms')">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 data-i18n="footerTerms">Пользовательское соглашение</h3>
+      <button class="modal-close" onclick="closeModal('terms')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body" id="termsBody">
+      <div class="modal-placeholder">
+        <div class="modal-ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>
+        <h4 data-i18n="modalPlaceholderTitle">Документ в разработке</h4>
+        <p data-i18n="modalTermsDesc">Пользовательское соглашение будет опубликовано в ближайшее время.</p>
+        <code>config.js → legal.terms</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalRules" onclick="closeModalOutside(event,'modalRules')">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 data-i18n="footerRules">Правила пользования</h3>
+      <button class="modal-close" onclick="closeModal('rules')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body" id="rulesBody">
+      <div class="modal-placeholder">
+        <div class="modal-ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <h4 data-i18n="modalPlaceholderTitle">Документ в разработке</h4>
+        <p data-i18n="modalRulesDesc">Правила пользования сервисом будут опубликованы в ближайшее время.</p>
+        <code>config.js → legal.rules</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalPayment" onclick="closeModalOutside(event,'modalPayment')">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="paymentPopupTitle" data-i18n="modalCopyIpTitle">Копирование IP</h3>
+      <button class="modal-close" onclick="closeModal('payment')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="payment-content">
+        <p id="paymentPopupBody" data-i18n="modalCopyIpDesc">Нажмите кнопку ниже, чтобы скопировать адрес сервера:</p>
+        
+        <a id="copyServerIpBtn" href="#" class="payment-link" style="cursor: pointer; justify-content: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="flex-shrink: 0;">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="copyBtnText">Скопировать IP</span>
+        </a>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
