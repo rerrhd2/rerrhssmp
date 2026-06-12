@@ -638,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Если вы хотите жестко прописать текст, просто замените строку ниже на: const ipAddress = "rerrhdsmp.duckdns.org:4444";
       const ipAddress = (typeof CONFIG !== 'undefined' && CONFIG.servers && CONFIG.servers[0]) 
                         ? CONFIG.servers[0].ip 
-                        : "rerrhdsmp.duckdns.org:4444";
+                        : "rerrhdSMP.feathermc.gg";
 
       try {
         // Копируем адрес в буфер обмена устройства
