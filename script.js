@@ -323,10 +323,14 @@ function setLanguage(code) {
   // Buttons
   const heroBtnBuy   = document.getElementById('heroBtnBuy');
   const heroBtnLearn = document.getElementById('heroBtnLearn');
-  if (heroBtnBuy)   heroBtnBuy.querySelector('span:last-of-type').textContent = t.buyNowHero2 || t.buyNowHero || 'Скачать сейчас';
+  if (heroBtnBuy) {
+    const label = heroBtnBuy.querySelector('span:last-of-type');
+    if (label) label.textContent = getHeroActionLabel(code);
+  }
   if (heroBtnLearn) heroBtnLearn.querySelector('span').textContent = t.learnMore || 'Узнать больше';
 
   setupLauncherLinks();
+  setupHeroCopyButton();
 
   // Video hint
   const hint = document.getElementById('heroVideoHint');
@@ -428,7 +432,7 @@ function buildPricing() {
       </ul>
       <button class="plan-btn ${plan.popular ? 'plan-btn-primary' : 'plan-btn-outline'}"
         onclick="handleBuy('${plan.id}','${plan.duration[currentLang] || plan.duration.ru}')">
-        ${plan.id === 'Launcher' ? (t?.btnBuy2 || 'Скачать сейчас') : (t?.btnBuy || 'Купить сейчас')}
+        ${plan.id === 'Launcher' ? (t?.btnBuy2 || 'Скопировать IP') : (t?.btnBuy || 'Скопировать IP')}
       </button>
     `;
     grid.appendChild(card);
@@ -443,6 +447,55 @@ function normalizeUrl(url) {
   if (!url) return url;
   if (/^https?:\/\//i.test(url)) return url;
   return 'https://' + url;
+}
+
+function getServerCopyText() {
+  if (typeof CONFIG !== 'undefined' && CONFIG.serverText) {
+    return CONFIG.serverText;
+  }
+
+  if (typeof CONFIG !== 'undefined' && CONFIG.servers && CONFIG.servers[0]) {
+    return CONFIG.servers[0].ip || CONFIG.servers[0].address || '';
+  }
+
+  return 'rerrhdSMP.feathermc.gg';
+}
+
+function getHeroActionLabel(code) {
+  return (CONFIG.i18n?.[code]?.buyNowHero || CONFIG.i18n?.ru?.buyNowHero || 'Скачать сейчас');
+}
+
+function copyTextToClipboard(text, successMessage = 'Текст скопирован') {
+  if (!text) return Promise.reject(new Error('No text to copy'));
+  return navigator.clipboard.writeText(text).then(() => {
+    if (typeof showToast === 'function') {
+      showToast(successMessage);
+    }
+    return true;
+  });
+}
+
+function setupHeroCopyButton() {
+  const heroBtnBuy = document.getElementById('heroBtnBuy');
+  if (!heroBtnBuy) return;
+
+  heroBtnBuy.removeAttribute('href');
+  heroBtnBuy.style.cursor = 'pointer';
+  heroBtnBuy.onclick = async (e) => {
+    e.preventDefault();
+    const text = getServerCopyText();
+    try {
+      await copyTextToClipboard(text, `IP скопирован: ${text}`);
+      const label = heroBtnBuy.querySelector('span:last-of-type');
+      if (label) label.textContent = 'Скопировано';
+      setTimeout(() => {
+        if (label) label.textContent = getHeroActionLabel(currentLang);
+      }, 1800);
+    } catch (err) {
+      console.error('Не удалось скопировать:', err);
+      showToast('Не удалось скопировать');
+    }
+  };
 }
 
 function getLauncherUrl() {
@@ -476,9 +529,14 @@ function setupLauncherLinks() {
 ════════════════════════════════════════ */
 function handleBuy(planId, planLabel) {
   const payment = CONFIG.payment;
-  if (!payment) { showToast('Покупка скоро будет доступна!'); return; }
+  const serverText = getServerCopyText();
 
-  if (payment.usePopup) {
+  if (payment?.useRedirect && payment.redirectUrls?.[planId]) {
+    window.open(normalizeUrl(payment.redirectUrls[planId]), '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  if (payment?.usePopup) {
     const t = CONFIG.i18n[currentLang] || CONFIG.i18n['ru'];
     const title = document.getElementById('paymentPopupTitle');
     const body  = document.getElementById('paymentPopupBody');
@@ -490,13 +548,16 @@ function handleBuy(planId, planLabel) {
       link.textContent = payment.linkLabel || 'Написать нам';
     }
     openModal('payment');
-  } else if (payment.useRedirect && payment.redirectUrls?.[planId]) {
-    window.open(normalizeUrl(payment.redirectUrls[planId]), '_blank', 'noopener,noreferrer');
-  } else if (payment.url) {
-    window.open(payment.url + (payment.appendPlan ? `?plan=${planId}` : ''), '_blank');
-  } else {
-    showToast('Покупка скоро будет доступна!');
+    return;
   }
+
+  copyTextToClipboard(serverText, `IP сервера (${serverText}) скопирован!`)
+    .then(() => {
+      showToast('Ссылка/IP скопирован');
+    })
+    .catch(() => {
+      showToast('Не удалось скопировать');
+    });
 }
 
 /* ════════════════════════════════════════
@@ -674,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Автоматически берем IP из вашего файла config.js. 
       // Если у вас там структура CONFIG.servers, код возьмет первый доступный IP.
-      // Если вы хотите жестко прописать текст, просто замените строку ниже на: const ipAddress = "rerrhdsmp.duckdns.org:4444";
+      // Если вы хотите жестко прописать текст, просто замените строку ниже на: const ipAddress = "rerrhdSMP.feathermc.gg";
       const ipAddress = (typeof CONFIG !== 'undefined' && CONFIG.servers && CONFIG.servers[0]) 
                         ? CONFIG.servers[0].ip 
                         : "rerrhdSMP.feathermc.gg";
