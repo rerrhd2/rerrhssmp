@@ -323,8 +323,10 @@ function setLanguage(code) {
   // Buttons
   const heroBtnBuy   = document.getElementById('heroBtnBuy');
   const heroBtnLearn = document.getElementById('heroBtnLearn');
-  if (heroBtnBuy)   heroBtnBuy.querySelector('span:last-of-type').textContent = t.buyNowHero || 'Купить сейчас';
+  if (heroBtnBuy)   heroBtnBuy.querySelector('span:last-of-type').textContent = t.buyNowHero2 || t.buyNowHero || 'Скачать сейчас';
   if (heroBtnLearn) heroBtnLearn.querySelector('span').textContent = t.learnMore || 'Узнать больше';
+
+  setupLauncherLinks();
 
   // Video hint
   const hint = document.getElementById('heroVideoHint');
@@ -426,12 +428,47 @@ function buildPricing() {
       </ul>
       <button class="plan-btn ${plan.popular ? 'plan-btn-primary' : 'plan-btn-outline'}"
         onclick="handleBuy('${plan.id}','${plan.duration[currentLang] || plan.duration.ru}')">
-        ${t?.btnBuy || 'Купить сейчас'}
+        ${plan.id === 'Launcher' ? (t?.btnBuy2 || 'Скачать сейчас') : (t?.btnBuy || 'Купить сейчас')}
       </button>
     `;
     grid.appendChild(card);
   });
   setupReveal();
+}
+
+/* ════════════════════════════════════════
+   LAUNCHER DOWNLOAD
+════════════════════════════════════════ */
+function normalizeUrl(url) {
+  if (!url) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+  return 'https://' + url;
+}
+
+function getLauncherUrl() {
+  const payment = CONFIG.payment;
+  if (payment?.useRedirect && payment.redirectUrls?.Launcher) {
+    return normalizeUrl(payment.redirectUrls.Launcher);
+  }
+  return null;
+}
+
+function setupLauncherLinks() {
+  const url = getLauncherUrl();
+  if (!url) return;
+
+  const heroBtnBuy = document.getElementById('heroBtnBuy');
+  if (heroBtnBuy) {
+    heroBtnBuy.href = url;
+    heroBtnBuy.target = '_blank';
+    heroBtnBuy.rel = 'noopener noreferrer';
+  }
+
+  document.querySelectorAll('.btn-nav-buy').forEach(el => {
+    el.href = url;
+    el.target = '_blank';
+    el.rel = 'noopener noreferrer';
+  });
 }
 
 /* ════════════════════════════════════════
@@ -453,6 +490,8 @@ function handleBuy(planId, planLabel) {
       link.textContent = payment.linkLabel || 'Написать нам';
     }
     openModal('payment');
+  } else if (payment.useRedirect && payment.redirectUrls?.[planId]) {
+    window.open(normalizeUrl(payment.redirectUrls[planId]), '_blank', 'noopener,noreferrer');
   } else if (payment.url) {
     window.open(payment.url + (payment.appendPlan ? `?plan=${planId}` : ''), '_blank');
   } else {

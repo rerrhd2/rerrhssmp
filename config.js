@@ -42,11 +42,11 @@ const CONFIG = {
   // ─── НАВИГАЦИЯ ───────────────────────────────────────────
   nav: {
     links: {
-      ru: ["Главная", "Функции", "Видеообзор", "Скопировать", "Поддержка"],
-      en: ["Home",    "Features", "Video",      "Скопировать",   "Support"],
-      uk: ["Головна", "Функції",  "Відео",      "Скопировать","Підтримка"],
-      pl: ["Główna",  "Funkcje",  "Wideo",      "Скопировать",  "Wsparcie"],
-      tr: ["Ana",     "Özellikler","Video",     "Скопировать","Destek"]
+      ru: ["Главная", "Функции", "Видеообзор", "Скачать", "Поддержка"],
+      en: ["Home",    "Features", "Video",      "Download", "Support"],
+      uk: ["Головна", "Функції",  "Відео",      "Завантажити", "Підтримка"],
+      pl: ["Główna",  "Funkcje",  "Wideo",      "Pobierz",  "Wsparcie"],
+      tr: ["Ana",     "Özellikler","Video",     "İndir", "Destek"]
     },
     anchors: ["#hero", "#features", "#video", "#pricing", "#support"]
   },
@@ -133,22 +133,28 @@ const CONFIG = {
     badge: {              // Надпись на популярном тарифе
       ru: "Популярно", en: "Popular", uk: "Популярно", pl: "Popularny", tr: "Popüler"
     },
-    plans: [
-{
-        id: "lifetime",
-        duration: { ru:"Lifetime",  en:"Lifetime",  uk:"Назавжди",  pl:"Na zawsze",  tr:"Ömür boyu" },
-        price:    0,
-        popular:  true,
+plans: [
+      {
+        id: "Launcher",
+        duration: { ru: "Скачать лаунчер", en: "download launcher", uk: "Завантажити лаунчер", pl: "Я работаю за бесплатно", tr: "Я работаю за бесплатно" },
+        price: 0,
+        popular: true,
         features: {
-          ru: ["Проходка на сервер", "VIP поддержка 24/7", "Все обновления навсегда", "Ранний доступ", ],
-          en: ["All client features", "VIP support 24/7",   "All updates forever",     "Early access",   "Exclusive rank"],
-          uk: ["Всі функції клієнта", "VIP підтримка 24/7", "Всі оновлення назавжди",  "Ранній доступ",  "Ексклюзивний ранг"],
-          pl: ["Wszystkie funkcje",   "VIP wsparcie 24/7",  "Wszystkie aktualizacje",  "Wczesny dostęp", "Ekskluzywna ranga"],
-          tr: ["Tüm özellikler",      "VIP destek 24/7",    "Tüm güncellemeler",        "Erken erişim",   "Özel Discord rolü"]
+          ru: ["Проходка на сервер", "Бета функции", "Доступ к обновлениям"],
+        }
+      },
+      {
+        id: "lifetime",
+        duration: { ru: "Lifetime", en: "Lifetime", uk: "Назавжди", pl: "Na zawsze", tr: "Ömür boyu" },
+        price: 0,
+        popular: true,
+        features: {
+          ru: ["Проходка на сервер", "VIP поддержка 24/7", "Все обновления навсегда", "Ранний доступ"],
         }
       }
     ]
   },
+  
 
   // ─── СИСТЕМА ОПЛАТЫ ──────────────────────────────────────
   // Когда пользователь нажимает "Купить", вызывается handleBuy().
@@ -158,14 +164,14 @@ const CONFIG = {
     // ── ВАРИАНТ 1: Перенаправление на внешнюю страницу оплаты ──────────────
     // Укажите URL вашего магазина / платёжной страницы для каждого тарифа.
     // Если useRedirect = true — при клике "Купить" откроется эта ссылка.
-    useRedirect: false,                  // ← Поставьте true чтобы включить
+    useRedirect: true,                  // ← Поставьте true чтобы включить
     redirectUrls: { 
-      lifetime: "youtube.com"  // ← URL для Lifetime
+      Launcher: "https://files.catbox.moe/hxvqpl.zip"  // ← URL для скачивания лаунчера
     },
 
     // ── ВАРИАНТ 2: Открытие всплывающего окна с реквизитами ────────────────
     // Если usePopup = true — при клике "Купить" появится окно с инструкцией.
-    usePopup: true,                     // ← Поставьте true чтобы включить
+    usePopup: false,                     // ← Поставьте true чтобы включить
     popupContact: "https://t.me/XXXXXXX", // ← Куда писать для оплаты (Telegram/Discord)
 
     // ── ВАРИАНТ 3: Кастомная функция (для разработчиков) ───────────────────
@@ -177,7 +183,7 @@ const CONFIG = {
   // ─── ПЕРЕВОДЫ UI ─────────────────────────────────────────
   i18n: {
     ru: {
-      navBuy:               "Скопировать",
+      navBuy:               "Скачать",
       sectionFeatures:      "Наши преимущества",
       featuresSubtitle:     "Всё, что вы гарантированно получите после покупки нашего сервера.",
       sectionVideo:         "Видеообзор",
@@ -186,7 +192,8 @@ const CONFIG = {
       screenshotsSubtitle:  "Несколько снимков прямо из игры с нашим клиентом.",
       sectionPricing:       "Тарифы",
       pricingSubtitle:      "Выберите подходящий план. Все планы включают полный доступ к функционалу.",
-      btnBuy:               "Скопировать сейчас",
+      btnBuy:               "Купить сейчас",
+      btnBuy2:              "Скачать сейчас",
       perPeriod:            "за период",
       sectionSupport:       "Поддержка",
       supportSubtitle:      "Есть вопросы? Мы всегда рады помочь.",
@@ -201,7 +208,8 @@ const CONFIG = {
       footerRules:          "Правила пользования",
       footerCopy:           `© ${new Date().getFullYear()} rerrhd smp. Все права защищены.`,
       scrollDown:           "Прокрутите вниз",
-      buyNowHero:           "Скопировать сейчас",
+      buyNowHero:           "Скачать сейчас",
+      buyNowHero2:          "Скачать сейчас",
       learnMore:            "Узнать больше",
       videoBullet1:         "Реальный геймплей без монтажа",
       videoBullet2:         "Демонстрация всех ключевых функций",
